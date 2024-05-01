@@ -1,7 +1,7 @@
 import unittest
 
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestHTMLNode(unittest.TestCase):
         }
         node = HTMLNode(tag, value, children, props)
         self.assertEqual(
-            f"HTMLNode({tag}, {value}, {children}, {props})",
+            f"HTMLNode({tag}, {value}, children: {children}, {props})",
             repr(node)
         )
         
@@ -42,7 +42,60 @@ class TestHTMLNode(unittest.TestCase):
             "Baked salmon is great",
             node.to_html()
         )
-
+        
+    def test_to_html_with_children(self):
+        node = ParentNode(
+            "p",
+            [
+                LeafNode("b", "Bold text"),
+                LeafNode(None, "Normal text"),
+                LeafNode("i", "italic text"),
+                LeafNode(None, "Normal text"),
+            ],
+        )
+        self.assertEqual(
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>",
+            node.to_html()
+        )
+        
+    def test_to_html_with_grandchildren(self):
+        """ 
+        <div class="salmon-list">
+            <span>Reasons why baked salmon is great</span>
+            <ul class="list">
+                <li>High protein</li>
+                <li>Easy to make</li>
+                <li>A great conversation starter</li>
+            </ul>
+        </div>
+        """
+        result = '<div class="salmon-list"><span>Reasons why baked salmon is great</span><ul class="list"><li>High protein</li><li>Easy to make</li><li>A great conversation starter</li></ul></div>'
+        node = ParentNode(
+            "div",
+            [
+                LeafNode("span", "Reasons why baked salmon is great"),
+                ParentNode(
+                    "ul",
+                    [
+                        LeafNode("li", "High protein"),
+                        LeafNode("li", "Easy to make"),
+                        LeafNode("li", "A great conversation starter"),
+                    ],
+                    { "class": "list" }
+                ),
+            ],
+            { "class": "salmon-list" }
+        )
+        self.assertEqual(result, node.to_html())
+        
+    def test_to_html_with_one_child(self):
+        child_node = LeafNode("span", "child")
+        parent_node = ParentNode("div", [child_node])
+        self.assertEqual(
+            "<div><span>child</span></div>",
+            parent_node.to_html()
+        )
+        
     
 if __name__ == "__main__":
     unittest.main()
