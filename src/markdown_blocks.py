@@ -74,3 +74,11 @@ def unordered_list_block_to_html_node(markdown: str) -> ParentNode:
     for item in list_items:
         children.append(LeafNode("li", item[2:]))
     return ParentNode("ul", children)
+
+
+def ordered_list_block_to_html_node(markdown: str) -> ParentNode:
+    list_items = markdown.splitlines()
+    children = []
+    for item in list_items:
+        children.append(LeafNode("li", item[3:]))
+    return ParentNode("ol", children)

@@ -14,6 +14,7 @@ from markdown_blocks import (
     code_block_to_html_node,
     quote_block_to_html_node,
     unordered_list_block_to_html_node,
+    ordered_list_block_to_html_node,
 )
 
 from htmlnode import LeafNode, ParentNode
@@ -206,4 +207,17 @@ class TestBlockToHTMLNode(unittest.TestCase):
                 ]
             )}",
             f"{unordered_list_block_to_html_node(markdown)}"
+        )
+        
+    def test_ordered_list(self):
+        markdown = "1. apple\n2. orange"
+        self.assertEqual(
+            f"{ParentNode(
+                "ol", 
+                [
+                    LeafNode("li", "apple"),
+                    LeafNode("li", "orange"),
+                ]
+            )}",
+            f"{ordered_list_block_to_html_node(markdown)}"
         )
