@@ -24,5 +24,7 @@ def block_to_block_type(markdown: str) -> str:
         return block_type_heading
     elif re.match(r"^`{3}[\s\S]+`{3}$", markdown, flags=re.MULTILINE):
         return block_type_code
+    elif re.match(r"^>[^\n]*(?:\n>[^\n]*)*$", markdown):
+        return block_type_quote
     else:
         return block_type_paragraph

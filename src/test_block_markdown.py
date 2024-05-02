@@ -103,3 +103,18 @@ Paragraph 3
             block_to_block_type(text)
         )
         
+    def test_block_type_quote(self):
+        text=">This is a quote"
+        self.assertEqual(
+            block_type_quote,
+            block_to_block_type(text)
+        )
+    
+    def test_block_type_quote_multiline(self):
+        text=">Quote line 1\n> Quote line 2\n>Quote line 3"
+        self.assertEqual(
+            block_type_quote,
+            block_to_block_type(text)
+        )
+        
+    
