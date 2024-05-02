@@ -38,6 +38,10 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             html_node = code_block_to_html_node(block)
         elif block_type == block_type_quote:
             html_node = quote_block_to_html_node(block)
+        elif block_type == block_type_unordered_list:
+            html_node = unordered_list_block_to_html_node(block)
+        elif block_type == block_type_ordered_list:
+            html_node = ordered_list_block_to_html_node(block)
         
         if (block_type == block_type_paragraph 
             or block_type == block_type_heading
@@ -52,9 +56,23 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             )
         elif block_type == block_type_code:
             div_children.append(html_node)
-            
-        # TODO: unordered list
-        # TODO: ordered list
+        elif (block_type == block_type_unordered_list
+              or block_type == block_type_ordered_list
+              ):
+            list_items = html_node.children
+            sub_children = []
+            for item in list_items:
+                text_nodes = text_to_textnodes(item.value)
+                item_children = []
+                for text_node in text_nodes:
+                    item_children.append(text_node_to_html_node(text_node))
+                sub_children.append(
+                    ParentNode("li", item_children)
+                )
+            div_children.append(
+                ParentNode(html_node.tag, sub_children)
+            )
+
     return ParentNode("div", div_children)
 
 
