@@ -28,5 +28,12 @@ def block_to_block_type(markdown: str) -> str:
         return block_type_quote
     elif re.match(r"^(?:\s*[-\*\+]\s+.+(\n|$))+", markdown):
         return block_type_unordered_list
+    elif re.match(r"^1.[ \t]", markdown):
+        ordered_list = markdown.split("\n")
+        for i in range(len(ordered_list)):
+            regex = f"^{i + 1}.[ \\t]"
+            if not re.match(regex, ordered_list[i]):
+                return block_type_paragraph
+        return block_type_ordered_list
     else:
         return block_type_paragraph

@@ -130,3 +130,24 @@ Paragraph 3
             block_type_unordered_list,
             block_to_block_type(text)
         )
+
+    def test_block_type_ordered_list(self):
+        text = "1. Wake up at 7\n2.\tBrush my teeth\n3. Bake salmon"
+        self.assertEqual(
+            block_type_ordered_list,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_ordered_list_one_line(self):
+        text = "1. Bake salmon"
+        self.assertEqual(
+            block_type_ordered_list,
+            block_to_block_type(text)
+        )
+    
+    def test_block_type_not_ordered_list(self):
+        text = "1. This list\n4. Is a bit sus"
+        self.assertEqual(
+            block_type_paragraph,
+            block_to_block_type(text)
+        )
