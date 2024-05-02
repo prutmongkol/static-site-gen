@@ -11,9 +11,11 @@ from markdown_blocks import (
     block_type_ordered_list,
     paragraph_block_to_html_node,
     heading_block_to_html_node,
+    code_block_to_html_node,
+    quote_block_to_html_node,
 )
 
-from htmlnode import LeafNode
+from htmlnode import LeafNode, ParentNode
 
 
 class TestMarkdownBlocks(unittest.TestCase):
@@ -169,4 +171,25 @@ class TestBlockToHTMLNode(unittest.TestCase):
         self.assertEqual(
             f"{LeafNode("h1", "Heading")}",
             f"{heading_block_to_html_node(markdown)}"
+        )
+        
+    def test_code(self):
+        markdown = "```\nCode Block\n```"
+        self.assertEqual(
+            f"{ParentNode("pre", [LeafNode("code", "Code Block")])}",
+            f"{code_block_to_html_node(markdown)}"
+        )
+        
+    def test_quote(self):
+        markdown = "> Sublime message"
+        self.assertEqual(
+            f"{LeafNode("blockquote", "Sublime message")}",
+            f"{quote_block_to_html_node(markdown)}"
+        )
+        
+    def test_quote_multiline(self):
+        markdown = "> Wow\n> Such salmon"
+        self.assertEqual(
+            f"{LeafNode("blockquote", "Wow<br/>Such salmon")}",
+            f"{quote_block_to_html_node(markdown)}"
         )

@@ -44,8 +44,25 @@ def block_to_block_type(markdown: str) -> str:
 def paragraph_block_to_html_node(markdown: str) -> LeafNode:
     return LeafNode("p", markdown)
 
+
 def heading_block_to_html_node(markdown: str) -> LeafNode:
     heading_text_tup = re.findall(r"^(#{1,6})\s(.*)", markdown)
     tag = f"h{len(heading_text_tup[0][0])}"
     value = heading_text_tup[0][1]
     return LeafNode(tag, value)
+
+
+def code_block_to_html_node(markdown: str) -> ParentNode:
+    code_list = re.findall(r"^`{3}([\s\S]+)`{3}$", markdown)
+    value = code_list[0].strip()
+    return ParentNode("pre", [LeafNode("code", value)])
+
+
+def quote_block_to_html_node(markdown: str) -> LeafNode:
+    quote_list = markdown.splitlines()
+    value = ""
+    for quote in quote_list:
+        value += re.findall(r"^>[\s]*(.*)", quote)[0]
+        value += "<br/>"
+    value = value[:-5]
+    return LeafNode("blockquote", value)
