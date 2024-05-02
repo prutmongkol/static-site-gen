@@ -28,16 +28,21 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     div_children = []
     for block in blocks:
         type = block_to_block_type(block)
+        leaf_node = None
+        
         if type == block_type_paragraph:
             leaf_node = paragraph_block_to_html_node(block)
-            text_nodes = text_to_textnodes(leaf_node.value)
-            p_children = []
-            for text_node in text_nodes:
-                p_children.append(text_node_to_html_node(text_node))
-            div_children.append(
-                ParentNode("p", p_children)
-            )
-        # TODO: heading
+        elif type == block_type_heading:
+            leaf_node = heading_block_to_html_node(block)
+        
+        text_nodes = text_to_textnodes(leaf_node.value)
+        sub_children = []
+        for text_node in text_nodes:
+            sub_children.append(text_node_to_html_node(text_node))
+        div_children.append(
+            ParentNode(leaf_node.tag, sub_children)
+        )
+            
         # TODO: code
         # TODO: quote
         # TODO: unordered list
