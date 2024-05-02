@@ -13,6 +13,7 @@ from markdown_blocks import (
     heading_block_to_html_node,
     code_block_to_html_node,
     quote_block_to_html_node,
+    unordered_list_block_to_html_node,
 )
 
 from htmlnode import LeafNode, ParentNode
@@ -192,4 +193,17 @@ class TestBlockToHTMLNode(unittest.TestCase):
         self.assertEqual(
             f"{LeafNode("blockquote", "Wow<br/>Such salmon")}",
             f"{quote_block_to_html_node(markdown)}"
+        )
+
+    def test_unordered_list(self):
+        markdown = "- apple\n- orange"
+        self.assertEqual(
+            f"{ParentNode(
+                "ul", 
+                [
+                    LeafNode("li", "apple"),
+                    LeafNode("li", "orange"),
+                ]
+            )}",
+            f"{unordered_list_block_to_html_node(markdown)}"
         )

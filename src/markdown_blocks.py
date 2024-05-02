@@ -66,3 +66,11 @@ def quote_block_to_html_node(markdown: str) -> LeafNode:
         value += "<br/>"
     value = value[:-5]
     return LeafNode("blockquote", value)
+
+
+def unordered_list_block_to_html_node(markdown: str) -> ParentNode:
+    list_items = markdown.splitlines()
+    children = []
+    for item in list_items:
+        children.append(LeafNode("li", item[2:]))
+    return ParentNode("ul", children)
