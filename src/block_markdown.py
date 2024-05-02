@@ -22,5 +22,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 def block_to_block_type(markdown: str) -> str:
     if re.match(r"^#{1,6}\s.", markdown):
         return block_type_heading
+    elif re.match(r"^`{3}[\s\S]+`{3}$", markdown, flags=re.MULTILINE):
+        return block_type_code
     else:
         return block_type_paragraph

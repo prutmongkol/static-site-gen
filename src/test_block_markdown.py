@@ -81,3 +81,25 @@ Paragraph 3
             block_type_paragraph,
             block_to_block_type(text)
         )
+
+    def test_block_type_code(self):
+        text="```\nCode Block\n```"
+        self.assertEqual(
+            block_type_code,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_code2(self):
+        text="```Code Block```"
+        self.assertEqual(
+            block_type_code,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_not_code(self):
+        text="``````"
+        self.assertEqual(
+            block_type_paragraph,
+            block_to_block_type(text)
+        )
+        
