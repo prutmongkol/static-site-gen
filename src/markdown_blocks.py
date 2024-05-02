@@ -27,21 +27,26 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     blocks = markdown_to_blocks(markdown)
     div_children = []
     for block in blocks:
-        type = block_to_block_type(block)
-        leaf_node = None
+        block_type = block_to_block_type(block)
+        html_node = None
         
-        if type == block_type_paragraph:
-            leaf_node = paragraph_block_to_html_node(block)
-        elif type == block_type_heading:
-            leaf_node = heading_block_to_html_node(block)
+        if block_type == block_type_paragraph:
+            html_node = paragraph_block_to_html_node(block)
+        elif block_type == block_type_heading:
+            html_node = heading_block_to_html_node(block)
+        elif block_type == block_type_code:
+            html_node = code_block_to_html_node(block)
         
-        text_nodes = text_to_textnodes(leaf_node.value)
-        sub_children = []
-        for text_node in text_nodes:
-            sub_children.append(text_node_to_html_node(text_node))
-        div_children.append(
-            ParentNode(leaf_node.tag, sub_children)
-        )
+        if block_type == block_type_paragraph or block_type == block_type_heading:
+            text_nodes = text_to_textnodes(html_node.value)
+            sub_children = []
+            for text_node in text_nodes:
+                sub_children.append(text_node_to_html_node(text_node))
+            div_children.append(
+                ParentNode(html_node.tag, sub_children)
+            )
+        elif block_type == block_type_code:
+            div_children.append(html_node)
             
         # TODO: code
         # TODO: quote
