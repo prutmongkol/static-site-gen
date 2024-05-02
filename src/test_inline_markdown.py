@@ -5,8 +5,16 @@ from textnode import (
     text_type_text,
     text_type_bold,
     text_type_code,
+    text_type_image,
+    text_type_link,
 )
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links,
+    split_nodes_image,
+    split_nodes_link,
+)
 
 class TestInLineMarkDown(unittest.TestCase):
     def test_delimited(self):
@@ -76,3 +84,116 @@ class TestInLineMarkDown(unittest.TestCase):
             ],
             split_nodes_delimiter([node], "`", text_type_code)
         )
+        
+    def test_extract_markdown_images(self):
+        text = "This is text with an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and ![another](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/dfsdkjfd.png)"
+        self.assertEqual(
+            [
+                ("image", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"), 
+                ("another", "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/dfsdkjfd.png")
+            ],
+            extract_markdown_images(text)
+        )
+    
+    def test_extract_markdown_links(self):
+        text = "This is text with a [link](https://www.example.com) and [another](https://www.example.com/another)"
+        self.assertEqual(
+            [
+                ("link", "https://www.example.com"), 
+                ("another", "https://www.example.com/another")
+            ],
+            extract_markdown_links(text)
+        )
+    
+    def test_split_node_one_image(self):
+        node = TextNode(
+            "This text has an ![image](https://placehold.co/600x400)",
+            text_type_text,
+        )
+        self.assertEqual(
+            [
+                TextNode("This text has an ", text_type_text),
+                TextNode("image", text_type_image, "https://placehold.co/600x400"),
+            ],
+            split_nodes_image([node])
+        )
+        
+    def test_split_node_many_images(self):
+        node = TextNode(
+            "This text has this ![image](https://placehold.co/600x400) and ![another](https://placehold.co/300x300)",
+            text_type_text,
+        )
+        self.assertEqual(
+            [
+                TextNode("This text has this ", text_type_text),
+                TextNode("image", text_type_image, "https://placehold.co/600x400"),
+                TextNode(" and ", text_type_text),
+                TextNode("another", text_type_image, "https://placehold.co/300x300"),
+            ],
+            split_nodes_image([node])
+        )
+    
+    def test_split_node_only_image(self):
+        node = TextNode("image", text_type_image, "https://placehold.co/600x400")
+        self.assertEqual(
+            [TextNode("image", text_type_image, "https://placehold.co/600x400")],
+            split_nodes_image([node])
+        )
+        
+    def test_split_node_image_inbetween(self):
+        node = TextNode("Look at ![this](https://placehold.co/600x400). Isn't it awesome?", text_type_text)
+        self.assertEqual(
+            [
+                TextNode("Look at ", text_type_text),
+                TextNode("this", text_type_image, "https://placehold.co/600x400"),
+                TextNode(". Isn't it awesome?", text_type_text)
+            ],
+            split_nodes_image([node])
+        )
+        
+    def test_split_node_one_link(self):
+        node = TextNode(
+            "This text has a [link](https://placehold.co/600x400)",
+            text_type_text,
+        )
+        self.assertEqual(
+            [
+                TextNode("This text has a ", text_type_text),
+                TextNode("link", text_type_link, "https://placehold.co/600x400"),
+            ],
+            split_nodes_link([node])
+        )
+    
+    def test_split_node_many_links(self):
+        node = TextNode(
+            "This text has this [link](https://placehold.co/600x400) and [another](https://placehold.co/300x300)",
+            text_type_text,
+        )
+        self.assertEqual(
+            [
+                TextNode("This text has this ", text_type_text),
+                TextNode("link", text_type_link, "https://placehold.co/600x400"),
+                TextNode(" and ", text_type_text),
+                TextNode("another", text_type_link, "https://placehold.co/300x300"),
+            ],
+            split_nodes_link([node])
+        )
+    
+    def test_split_node_only_link(self):
+        node = TextNode("link", text_type_link, "https://placehold.co/600x400")
+        self.assertEqual(
+            [TextNode("link", text_type_link, "https://placehold.co/600x400")],
+            split_nodes_link([node])
+        )
+    
+    def test_split_node_link_inbetween(self):
+        node = TextNode("Look at [this](https://placehold.co/600x400). Isn't it awesome?", text_type_text)
+        self.assertEqual(
+            [
+                TextNode("Look at ", text_type_text),
+                TextNode("this", text_type_link, "https://placehold.co/600x400"),
+                TextNode(". Isn't it awesome?", text_type_text)
+            ],
+            split_nodes_link([node])
+        )
+      
