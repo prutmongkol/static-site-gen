@@ -1,6 +1,15 @@
 import unittest
 
-from block_markdown import markdown_to_blocks
+from block_markdown import (
+    markdown_to_blocks,
+    block_to_block_type,
+    block_type_paragraph,
+    block_type_heading,
+    block_type_code,
+    block_type_quote,
+    block_type_unordered_list,
+    block_type_ordered_list,
+)
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -44,4 +53,31 @@ Paragraph 3
             ],
             markdown_to_blocks(text)
         )
-            
+
+    def test_block_type_heading1(self):
+        text = "# Heading"
+        self.assertEqual(
+            block_type_heading,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_heading6(self):
+        text = "###### Heading"
+        self.assertEqual(
+            block_type_heading,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_not_heading1(self):
+        text = "#Not Heading"
+        self.assertEqual(
+            block_type_paragraph,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_not_heading7(self):
+        text = "####### Not Heading"
+        self.assertEqual(
+            block_type_paragraph,
+            block_to_block_type(text)
+        )
