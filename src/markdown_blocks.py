@@ -1,6 +1,19 @@
 import re
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import LeafNode, ParentNode
+
+from textnode import (
+    TextNode,
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_link,
+    text_type_image,
+    text_node_to_html_node,
+)
+
+from inline_markdown import text_to_textnodes
 
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
@@ -8,6 +21,28 @@ block_type_code = "code"
 block_type_quote = "quote"
 block_type_unordered_list = "unordered_list"
 block_type_ordered_list = "ordered_list"
+
+
+def markdown_to_html_node(markdown: str) -> ParentNode:
+    blocks = markdown_to_blocks(markdown)
+    div_children = []
+    for block in blocks:
+        type = block_to_block_type(block)
+        if type == block_type_paragraph:
+            leaf_node = paragraph_block_to_html_node(block)
+            text_nodes = text_to_textnodes(leaf_node.value)
+            p_children = []
+            for text_node in text_nodes:
+                p_children.append(text_node_to_html_node(text_node))
+            div_children.append(
+                ParentNode("p", p_children)
+            )
+        # TODO: heading
+        # TODO: code
+        # TODO: quote
+        # TODO: unordered list
+        # TODO: ordered list
+    return ParentNode("div", div_children)
 
 
 def markdown_to_blocks(markdown: str) -> list[str]:
