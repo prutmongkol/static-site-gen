@@ -36,8 +36,13 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             html_node = heading_block_to_html_node(block)
         elif block_type == block_type_code:
             html_node = code_block_to_html_node(block)
+        elif block_type == block_type_quote:
+            html_node = quote_block_to_html_node(block)
         
-        if block_type == block_type_paragraph or block_type == block_type_heading:
+        if (block_type == block_type_paragraph 
+            or block_type == block_type_heading
+            or block_type == block_type_quote
+            ):
             text_nodes = text_to_textnodes(html_node.value)
             sub_children = []
             for text_node in text_nodes:
@@ -48,8 +53,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         elif block_type == block_type_code:
             div_children.append(html_node)
             
-        # TODO: code
-        # TODO: quote
         # TODO: unordered list
         # TODO: ordered list
     return ParentNode("div", div_children)
