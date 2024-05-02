@@ -4,6 +4,7 @@ from textnode import (
     TextNode,
     text_type_text,
     text_type_bold,
+    text_type_italic,
     text_type_code,
     text_type_image,
     text_type_link,
@@ -14,6 +15,7 @@ from inline_markdown import (
     extract_markdown_links,
     split_nodes_image,
     split_nodes_link,
+    text_to_textnodes,
 )
 
 class TestInLineMarkDown(unittest.TestCase):
@@ -196,4 +198,67 @@ class TestInLineMarkDown(unittest.TestCase):
             ],
             split_nodes_link([node])
         )
-      
+    
+    def test_text_to_textnode(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev)"
+        self.assertEqual(
+            [
+                TextNode("This is ", text_type_text),
+                TextNode("text", text_type_bold),
+                TextNode(" with an ", text_type_text),
+                TextNode("italic", text_type_italic),
+                TextNode(" word and a ", text_type_text),
+                TextNode("code block", text_type_code),
+                TextNode(" and an ", text_type_text),
+                TextNode("image", text_type_image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and a ", text_type_text),
+                TextNode("link", text_type_link, "https://boot.dev"),
+            ],
+            text_to_textnodes(text)
+        )
+    
+    def test_text_to_textnode_only_text(self):
+        text = "Baked salmon is great"
+        self.assertEqual(
+            [TextNode("Baked salmon is great", text_type_text)],
+            text_to_textnodes(text)
+        )
+        
+    def test_text_to_textnode_only_markdown(self):
+        text = "*Baked salmon is great*"
+        self.assertEqual(
+            [TextNode("Baked salmon is great", text_type_italic)],
+            text_to_textnodes(text)
+        )
+    
+    def test_text_to_textnode_markdown_start(self):
+        text = "*Baked* salmon is great"
+        self.assertEqual(
+            [
+                TextNode("Baked", text_type_italic),
+                TextNode(" salmon is great", text_type_text)
+            ],
+            text_to_textnodes(text)
+        )
+    
+    def test_text_to_textnode_markdown_middle(self):
+        text = "Baked *salmon* is great"
+        self.assertEqual(
+            [
+                TextNode("Baked ", text_type_text),
+                TextNode("salmon", text_type_italic),
+                TextNode(" is great", text_type_text)
+            ],
+            text_to_textnodes(text)
+        )
+    
+    def test_text_to_textnode_markdown_end(self):
+        text = "Baked salmon is *great*"
+        self.assertEqual(
+            [
+                TextNode("Baked salmon is ", text_type_text),
+                TextNode("great", text_type_italic)
+            ],
+            text_to_textnodes(text)
+        )
+    
