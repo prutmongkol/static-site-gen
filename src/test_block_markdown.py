@@ -117,4 +117,16 @@ Paragraph 3
             block_to_block_type(text)
         )
         
-    
+    def test_block_type_unordered_list(self):
+        text="- Apple\n* Banana\n+ Orange"
+        self.assertEqual(
+            block_type_unordered_list,
+            block_to_block_type(text)
+        )
+        
+    def test_block_type_unordered_list_one_line(self):
+        text="- Apple"
+        self.assertEqual(
+            block_type_unordered_list,
+            block_to_block_type(text)
+        )

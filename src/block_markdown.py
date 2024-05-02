@@ -26,5 +26,7 @@ def block_to_block_type(markdown: str) -> str:
         return block_type_code
     elif re.match(r"^>[^\n]*(?:\n>[^\n]*)*$", markdown):
         return block_type_quote
+    elif re.match(r"^(?:\s*[-\*\+]\s+.+(\n|$))+", markdown):
+        return block_type_unordered_list
     else:
         return block_type_paragraph
