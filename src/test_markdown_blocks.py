@@ -9,10 +9,14 @@ from markdown_blocks import (
     block_type_quote,
     block_type_unordered_list,
     block_type_ordered_list,
+    paragraph_block_to_html_node,
+    heading_block_to_html_node,
 )
 
+from htmlnode import LeafNode
 
-class TestBlockMarkdown(unittest.TestCase):
+
+class TestMarkdownBlocks(unittest.TestCase):
     def test_block_markdown(self):
         text = """# This is a heading
 
@@ -150,4 +154,19 @@ Paragraph 3
         self.assertEqual(
             block_type_paragraph,
             block_to_block_type(text)
+        )
+
+class TestBlockToHTMLNode(unittest.TestCase):
+    def test_paragraph(self):
+        markdown = "This is a paragraph"
+        self.assertEqual(
+            f"{LeafNode("p", "This is a paragraph")}",
+            f"{paragraph_block_to_html_node(markdown)}"
+        )
+        
+    def test_heading(self):
+        markdown = "# Heading"
+        self.assertEqual(
+            f"{LeafNode("h1", "Heading")}",
+            f"{heading_block_to_html_node(markdown)}"
         )

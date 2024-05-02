@@ -1,5 +1,7 @@
 import re
 
+from htmlnode import HTMLNode, LeafNode, ParentNode
+
 block_type_paragraph = "paragraph"
 block_type_heading = "heading"
 block_type_code = "code"
@@ -37,3 +39,13 @@ def block_to_block_type(markdown: str) -> str:
         return block_type_ordered_list
     else:
         return block_type_paragraph
+
+
+def paragraph_block_to_html_node(markdown: str) -> LeafNode:
+    return LeafNode("p", markdown)
+
+def heading_block_to_html_node(markdown: str) -> LeafNode:
+    heading_text_tup = re.findall(r"^(#{1,6})\s(.*)", markdown)
+    tag = f"h{len(heading_text_tup[0][0])}"
+    value = heading_text_tup[0][1]
+    return LeafNode(tag, value)
