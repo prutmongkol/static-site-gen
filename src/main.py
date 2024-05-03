@@ -1,13 +1,13 @@
 import os
 import shutil
 
-from copy_contents import copy_files, generate_page
+from copy_contents import copy_files, generate_pages_recursive
 
 dir_path_static = "./static"
 dir_path_public = "./public"
-file_path_content = "./content/index.md"
+dir_path_content = "./content"
 file_path_template = "./template.html"
-file_path_public = "./public/index.html"
+dir_path_public = "./public"
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     print("Copying static files to public directory...")
     copy_files(dir_path_static, dir_path_public)
 
-    generate_page(file_path_content, file_path_template, file_path_public)
+    generate_pages_recursive(dir_path_content, file_path_template, dir_path_public)
     
 
 main()
