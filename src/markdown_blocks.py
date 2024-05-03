@@ -87,17 +87,34 @@ def markdown_to_blocks(markdown: str) -> list[str]:
     return cleaned_blocks
 
 
-def block_to_block_type(markdown: str) -> str:
-    if re.match(r"^#{1,6}\s.", markdown):
+def block_to_html_node(block: str):
+    block_type = block_to_block_type(block)
+    if block_type == block_type_paragraph:
+        return paragraph_block_to_html_node(block)
+    if block_type == block_type_heading:
+        return heading_block_to_html_node(block)
+    if block_type == block_type_code:
+        return code_block_to_html_node(block)
+    if block_type == block_type_quote:
+        return quote_block_to_html_node(block)
+    if block_type == block_type_unordered_list:
+        return unordered_list_block_to_html_node(block)
+    if block_type == block_type_ordered_list:
+        return ordered_list_block_to_html_node(block)
+    raise ValueError("Invalid block type")
+
+
+def block_to_block_type(block: str) -> str:
+    if re.match(r"^#{1,6}\s.", block):
         return block_type_heading
-    elif re.match(r"^`{3}[\s\S]+`{3}$", markdown, flags=re.MULTILINE):
+    elif re.match(r"^`{3}[\s\S]+`{3}$", block, flags=re.MULTILINE):
         return block_type_code
-    elif re.match(r"^>[^\n]*(?:\n>[^\n]*)*$", markdown):
+    elif re.match(r"^>[^\n]*(?:\n>[^\n]*)*$", block):
         return block_type_quote
-    elif re.match(r"^(?:\s*[-\*\+]\s+.+(\n|$))+", markdown):
+    elif re.match(r"^(?:\s*[-\*\+]\s+.+(\n|$))+", block):
         return block_type_unordered_list
-    elif re.match(r"^1.[ \t]", markdown):
-        ordered_list = markdown.split("\n")
+    elif re.match(r"^1.[ \t]", block):
+        ordered_list = block.split("\n")
         for i in range(len(ordered_list)):
             regex = f"^{i + 1}.[ \\t]"
             if not re.match(regex, ordered_list[i]):
