@@ -30,7 +30,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         html_node = block_to_html_node(block)
         div_children.append(html_node)
 
-    # TODO: unordered_list
     # TODO: ordered_list
     
     # for block in blocks:
@@ -179,12 +178,14 @@ def quote_block_to_html_node(block: str) -> ParentNode:
     return ParentNode("blockquote", children)
 
 
-def unordered_list_block_to_html_node(markdown: str) -> ParentNode:
-    list_items = markdown.splitlines()
-    children = []
-    for item in list_items:
-        children.append(LeafNode("li", item[2:]))
-    return ParentNode("ul", children)
+def unordered_list_block_to_html_node(block: str) -> ParentNode:
+    text_items = block.splitlines()
+    list_items = []
+    for item in text_items:
+        text = item[2:]
+        children = text_to_children(text)
+        list_items.append(ParentNode("li", children))
+    return ParentNode("ul", list_items)
 
 
 def ordered_list_block_to_html_node(markdown: str) -> ParentNode:

@@ -228,13 +228,13 @@ class TestBlockToHTMLNode(unittest.TestCase):
         )
 
     def test_unordered_list(self):
-        markdown = "- apple\n- orange"
+        markdown = "- apple\n- *orange*"
         self.assertEqual(
             f"{ParentNode(
                 "ul", 
                 [
-                    LeafNode("li", "apple"),
-                    LeafNode("li", "orange"),
+                    ParentNode("li", [LeafNode(None, "apple")]),
+                    ParentNode("li", [LeafNode("i", "orange")]),
                 ]
             )}",
             f"{unordered_list_block_to_html_node(markdown)}"
