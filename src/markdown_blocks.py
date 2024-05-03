@@ -157,10 +157,17 @@ def heading_block_to_html_node(markdown: str) -> ParentNode:
     return ParentNode(tag, children)
 
 
-def code_block_to_html_node(markdown: str) -> ParentNode:
-    code_list = re.findall(r"^`{3}([\s\S]+)`{3}$", markdown)
-    value = code_list[0].strip()
-    return ParentNode("pre", [LeafNode("code", value)])
+def code_block_to_html_node(block: str) -> ParentNode:
+    if not block.startswith("```") or not block.endswith("```"):
+        raise ValueError("Invalid code block")
+    text = block[4:-3]
+    children = text_to_children(text)
+    return ParentNode(
+        "pre", 
+        [
+            ParentNode("code", children)
+        ]
+    )
 
 
 def quote_block_to_html_node(markdown: str) -> LeafNode:

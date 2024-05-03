@@ -188,10 +188,23 @@ class TestBlockToHTMLNode(unittest.TestCase):
         )
         
     def test_code(self):
-        markdown = "```\nCode Block\n```"
+        block = "```\nCode Block\n```"
         self.assertEqual(
-            f"{ParentNode("pre", [LeafNode("code", "Code Block")])}",
-            f"{code_block_to_html_node(markdown)}"
+            f"{ParentNode(
+                "pre", 
+                [
+                    ParentNode(
+                        "code", 
+                        [
+                            LeafNode(
+                                None, 
+                                "Code Block\n"
+                            )
+                        ]
+                    )
+                ]
+            )}",
+            f"{code_block_to_html_node(block)}"
         )
         
     def test_quote(self):
