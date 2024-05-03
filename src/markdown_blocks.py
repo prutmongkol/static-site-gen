@@ -29,8 +29,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     for block in blocks:
         html_node = block_to_html_node(block)
         div_children.append(html_node)
-        
-    # TODO: heading
+
     # TODO: code
     # TODO: quote
     # TODO: unordered_list
@@ -150,11 +149,12 @@ def paragraph_block_to_html_node(block: str) -> ParentNode:
     return ParentNode("p", children)
 
 
-def heading_block_to_html_node(markdown: str) -> LeafNode:
+def heading_block_to_html_node(markdown: str) -> ParentNode:
     heading_text_tup = re.findall(r"^(#{1,6})\s(.*)", markdown)
     tag = f"h{len(heading_text_tup[0][0])}"
-    value = heading_text_tup[0][1]
-    return LeafNode(tag, value)
+    text = heading_text_tup[0][1]
+    children = text_to_children(text)
+    return ParentNode(tag, children)
 
 
 def code_block_to_html_node(markdown: str) -> ParentNode:

@@ -175,10 +175,16 @@ class TestBlockToHTMLNode(unittest.TestCase):
         )
         
     def test_heading(self):
-        markdown = "# Heading"
+        block = "# Heading **Banana**"
         self.assertEqual(
-            f"{LeafNode("h1", "Heading")}",
-            f"{heading_block_to_html_node(markdown)}"
+            f"{ParentNode(
+                "h1", 
+                [
+                    LeafNode(None, "Heading "),
+                    LeafNode("b", "Banana"),
+                ]
+                )}",
+            f"{heading_block_to_html_node(block)}"
         )
         
     def test_code(self):
