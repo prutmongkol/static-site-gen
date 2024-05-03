@@ -30,8 +30,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         html_node = block_to_html_node(block)
         div_children.append(html_node)
 
-    # TODO: code
-    # TODO: quote
     # TODO: unordered_list
     # TODO: ordered_list
     
@@ -170,14 +168,15 @@ def code_block_to_html_node(block: str) -> ParentNode:
     )
 
 
-def quote_block_to_html_node(markdown: str) -> LeafNode:
-    quote_list = markdown.splitlines()
-    value = ""
+def quote_block_to_html_node(block: str) -> ParentNode:
+    quote_list = block.splitlines()
+    text = ""
     for quote in quote_list:
-        value += re.findall(r"^>[\s]*(.*)", quote)[0]
-        value += "<br/>"
-    value = value[:-5]
-    return LeafNode("blockquote", value)
+        text += re.findall(r"^>[\s]*(.*)", quote)[0]
+        text += "<br/>"
+    text = text[:-5]
+    children = text_to_children(text)
+    return ParentNode("blockquote", children)
 
 
 def unordered_list_block_to_html_node(markdown: str) -> ParentNode:

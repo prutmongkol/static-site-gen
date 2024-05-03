@@ -210,14 +210,20 @@ class TestBlockToHTMLNode(unittest.TestCase):
     def test_quote(self):
         markdown = "> Sublime message"
         self.assertEqual(
-            f"{LeafNode("blockquote", "Sublime message")}",
+            f"{ParentNode("blockquote", [LeafNode(None, "Sublime message")])}",
             f"{quote_block_to_html_node(markdown)}"
         )
         
     def test_quote_multiline(self):
-        markdown = "> Wow\n> Such salmon"
+        markdown = "> Wow\n> Such *salmon*"
         self.assertEqual(
-            f"{LeafNode("blockquote", "Wow<br/>Such salmon")}",
+            f"{ParentNode(
+                "blockquote",
+                [
+                    LeafNode(None, "Wow<br/>Such "),
+                    LeafNode("i", "salmon")
+                ]
+            )}",
             f"{quote_block_to_html_node(markdown)}"
         )
 
