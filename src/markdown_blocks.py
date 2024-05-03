@@ -1,15 +1,8 @@
 import re
 
-from htmlnode import LeafNode, ParentNode
+from htmlnode import ParentNode
 
 from textnode import (
-    TextNode,
-    text_type_text,
-    text_type_bold,
-    text_type_italic,
-    text_type_code,
-    text_type_link,
-    text_type_image,
     text_node_to_html_node,
 )
 
@@ -91,6 +84,8 @@ def text_to_children(text):
 
 def paragraph_block_to_html_node(block: str) -> ParentNode:
     lines = block.split("\n")
+    for i in range(len(lines)):
+        lines[i] = lines[i].strip()
     paragraph = " ".join(lines)
     children = text_to_children(paragraph)
     return ParentNode("p", children)
