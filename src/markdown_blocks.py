@@ -30,7 +30,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         html_node = block_to_html_node(block)
         div_children.append(html_node)
         
-    # TODO: paragraph
     # TODO: heading
     # TODO: code
     # TODO: quote
@@ -135,8 +134,20 @@ def block_to_block_type(block: str) -> str:
         return block_type_paragraph
 
 
-def paragraph_block_to_html_node(markdown: str) -> LeafNode:
-    return LeafNode("p", markdown)
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+    children = []
+    for text_node in text_nodes:
+        html_node = text_node_to_html_node(text_node)
+        children.append(html_node)
+    return children
+
+
+def paragraph_block_to_html_node(block: str) -> ParentNode:
+    lines = block.split("\n")
+    paragraph = " ".join(lines)
+    children = text_to_children(paragraph)
+    return ParentNode("p", children)
 
 
 def heading_block_to_html_node(markdown: str) -> LeafNode:

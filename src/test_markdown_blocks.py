@@ -162,10 +162,16 @@ Paragraph 3
 
 class TestBlockToHTMLNode(unittest.TestCase):
     def test_paragraph(self):
-        markdown = "This is a paragraph"
+        block = "This is a paragraph.\n*Awesome*"
         self.assertEqual(
-            f"{LeafNode("p", "This is a paragraph")}",
-            f"{paragraph_block_to_html_node(markdown)}"
+            f"{ParentNode(
+                "p", 
+                [
+                    LeafNode(None, "This is a paragraph. "),
+                    LeafNode("i", "Awesome")
+                ]
+                )}",
+            f"{paragraph_block_to_html_node(block)}"
         )
         
     def test_heading(self):
