@@ -208,14 +208,14 @@ class TestBlockToHTMLNode(unittest.TestCase):
         )
         
     def test_quote(self):
-        markdown = "> Sublime message"
+        block = "> Sublime message"
         self.assertEqual(
             f"{ParentNode("blockquote", [LeafNode(None, "Sublime message")])}",
-            f"{quote_block_to_html_node(markdown)}"
+            f"{quote_block_to_html_node(block)}"
         )
         
     def test_quote_multiline(self):
-        markdown = "> Wow\n> Such *salmon*"
+        block = "> Wow\n> Such *salmon*"
         self.assertEqual(
             f"{ParentNode(
                 "blockquote",
@@ -224,11 +224,11 @@ class TestBlockToHTMLNode(unittest.TestCase):
                     LeafNode("i", "salmon")
                 ]
             )}",
-            f"{quote_block_to_html_node(markdown)}"
+            f"{quote_block_to_html_node(block)}"
         )
 
     def test_unordered_list(self):
-        markdown = "- apple\n- *orange*"
+        block = "- apple\n- *orange*"
         self.assertEqual(
             f"{ParentNode(
                 "ul", 
@@ -237,18 +237,18 @@ class TestBlockToHTMLNode(unittest.TestCase):
                     ParentNode("li", [LeafNode("i", "orange")]),
                 ]
             )}",
-            f"{unordered_list_block_to_html_node(markdown)}"
+            f"{unordered_list_block_to_html_node(block)}"
         )
         
     def test_ordered_list(self):
-        markdown = "1. apple\n2. orange"
+        block = "1. apple\n2. *orange*"
         self.assertEqual(
             f"{ParentNode(
                 "ol", 
                 [
-                    LeafNode("li", "apple"),
-                    LeafNode("li", "orange"),
+                    ParentNode("li", [LeafNode(None, "apple")]),
+                    ParentNode("li", [LeafNode("i", "orange")]),
                 ]
             )}",
-            f"{ordered_list_block_to_html_node(markdown)}"
+            f"{ordered_list_block_to_html_node(block)}"
         )

@@ -29,56 +29,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     for block in blocks:
         html_node = block_to_html_node(block)
         div_children.append(html_node)
-
-    # TODO: ordered_list
-    
-    # for block in blocks:
-    #     block_type = block_to_block_type(block)
-    #     html_node = None
-        
-    #     if block_type == block_type_paragraph:
-    #         html_node = paragraph_block_to_html_node(block)
-    #     elif block_type == block_type_heading:
-    #         html_node = heading_block_to_html_node(block)
-    #     elif block_type == block_type_code:
-    #         html_node = code_block_to_html_node(block)
-    #     elif block_type == block_type_quote:
-    #         html_node = quote_block_to_html_node(block)
-    #     elif block_type == block_type_unordered_list:
-    #         html_node = unordered_list_block_to_html_node(block)
-    #     elif block_type == block_type_ordered_list:
-    #         html_node = ordered_list_block_to_html_node(block)
-        
-    #     if (block_type == block_type_paragraph 
-    #         or block_type == block_type_heading
-    #         or block_type == block_type_quote
-    #         ):
-    #         text_nodes = text_to_textnodes(html_node.value)
-    #         sub_children = []
-    #         for text_node in text_nodes:
-    #             sub_children.append(text_node_to_html_node(text_node))
-    #         div_children.append(
-    #             ParentNode(html_node.tag, sub_children)
-    #         )
-    #     elif block_type == block_type_code:
-    #         div_children.append(html_node)
-    #     elif (block_type == block_type_unordered_list
-    #           or block_type == block_type_ordered_list
-    #           ):
-    #         list_items = html_node.children
-    #         sub_children = []
-    #         for item in list_items:
-    #             text_nodes = text_to_textnodes(item.value)
-    #             item_children = []
-    #             for text_node in text_nodes:
-    #                 item_children.append(text_node_to_html_node(text_node))
-    #             sub_children.append(
-    #                 ParentNode("li", item_children)
-    #             )
-    #         div_children.append(
-    #             ParentNode(html_node.tag, sub_children)
-    #         )
-
     return ParentNode("div", div_children)
 
 
@@ -188,9 +138,11 @@ def unordered_list_block_to_html_node(block: str) -> ParentNode:
     return ParentNode("ul", list_items)
 
 
-def ordered_list_block_to_html_node(markdown: str) -> ParentNode:
-    list_items = markdown.splitlines()
-    children = []
-    for item in list_items:
-        children.append(LeafNode("li", item[3:]))
-    return ParentNode("ol", children)
+def ordered_list_block_to_html_node(block: str) -> ParentNode:
+    text_items = block.splitlines()
+    list_items = []
+    for item in text_items:
+        text = item[3:]
+        children = text_to_children(text)
+        list_items.append(ParentNode("li", children))
+    return ParentNode("ol", list_items)
